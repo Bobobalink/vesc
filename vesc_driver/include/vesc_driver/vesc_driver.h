@@ -9,6 +9,8 @@
 #include <std_msgs/Float64.h>
 #include <boost/optional.hpp>
 
+#include <boost/optional/optional_io.hpp>
+
 #include "vesc_driver/vesc_interface.h"
 #include "vesc_driver/vesc_packet.h"
 
