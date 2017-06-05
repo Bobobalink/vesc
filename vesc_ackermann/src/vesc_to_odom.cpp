@@ -102,9 +102,21 @@ void VescToOdom::vescStateCallback(const vesc_msgs::VescStateStamped::ConstPtr& 
 
   // Position uncertainty
   /** @todo Think about position uncertainty, perhaps get from parameters? */
-  odom->pose.covariance[0]  = 0.2; ///< x
-  odom->pose.covariance[7]  = 0.2; ///< y
-  odom->pose.covariance[35] = 0.4; ///< yaw
+  if(fabs(state->state.speed) > 750.0) {
+    odom->pose.covariance[0]  = 0.2; ///< x
+    odom->pose.covariance[7]  = 0.2; ///< y
+    odom->pose.covariance[14] = 10000000000.0; ///< z
+    odom->pose.covariance[21] = 10000000000.0; ///< roll
+    odom->pose.covariance[28] = 10000000000.0; ///< pitch
+    odom->pose.covariance[35] = 0.5; ///< yaw
+  } else {
+    odom->pose.covariance[0]  = 10.0; ///< x
+    odom->pose.covariance[7]  = 10.0; ///< y
+    odom->pose.covariance[14] = 10000000000.0; ///< z
+    odom->pose.covariance[21] = 10000000000.0; ///< roll
+    odom->pose.covariance[28] = 10000000000.0; ///< pitch
+    odom->pose.covariance[35] = 10.0; ///< yaw
+  }
 
   // Velocity ("in the coordinate frame given by the child_frame_id")
   odom->twist.twist.linear.x = current_speed;
@@ -113,6 +125,23 @@ void VescToOdom::vescStateCallback(const vesc_msgs::VescStateStamped::ConstPtr& 
 
   // Velocity uncertainty
   /** @todo Think about velocity uncertainty */
+//  if(fabs(state->state.speed) > 750.0) {
+//    odom->twist.covariance[0]  = 0.01; ///< vx
+//    odom->twist.covariance[7]  = 0.01; ///< vy
+//    odom->twist.covariance[14] = 10000000000.0; ///< vz
+//    odom->twist.covariance[21] = 10000000000.0; ///< vroll
+//    odom->twist.covariance[28] = 10000000000.0; ///< vpitch
+//    odom->twist.covariance[35] = 0.01; ///< vyaw
+//  } else {
+//    odom->twist.covariance[0]  = 0.1; ///< vx
+//    odom->twist.covariance[7]  = 0.01; ///< vy
+//    odom->twist.covariance[14] = 10000000000.0; ///< vz
+//    odom->twist.covariance[21] = 10000000000.0; ///< vroll
+//    odom->twist.covariance[28] = 10000000000.0; ///< vpitch
+//    odom->twist.covariance[35] = 0.1; ///< vyaw
+//  }
+
+
 
   if (publish_tf_) {
     geometry_msgs::TransformStamped tf;
